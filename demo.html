@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html class="no-js">
+    <head>
+        <title>Curly scanner</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+
+        <style>
+            .form-group, body {
+                padding: 20px 0px;
+            }
+
+            .error, .info {
+                background-color: #eeeeee;
+                font-size: 11px;
+                white-space: pre;
+                margin-bottom: 4px;
+            }
+
+            .myclearfix:after {
+                content: " ";
+                display: block;
+                height: 0;
+                clear: both;
+            }
+
+            #output div div {
+                float: left;
+                width: 200px;
+            }
+
+            .error {
+                color: red;
+            }
+
+            .info.html {
+                color: #4918DA;
+            }
+
+            #input, .error, .info {
+                font-family: monospace;
+            }
+        </style>
+    </head>
+    <body>
+
+        <div class="container">
+            <div class="row">
+                <div id="time"></div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="comment">Write or paste curly template:</label>
+
+                        <textarea class="form-control" rows="35" id="input">
+<div id="foo">
+  First some HTML with {{title}} and {{body}}
+</div>
+
+{{#vip_customer}}
+  <div>{{sidebar row=3 width=20px title="I'm the one!"}}</div>
+{{/vip_customer}}
+
+{{{ is a beautiful symbol
+
+Difference?
+1. {{{{one}}}}
+3. {{{{{two}}}}}
+
+{{@comment_form}}
+  <b>Name:</b> {{name_field}}<br>
+  {{submit_button}}
+{{/comment_form}}
+
+{{! Odd {{{ comment }}
+
+{{%syntax_error}}
+
+{{ {{second_syntax_error}}
+
+{{third_syntax_error} }
+
+{{*items}}
+  {{item}}
+{{/items}}
+
+<div>{{{{{end}}}}}</div>
+</textarea>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="comment">Tokenized input (updates real time):</label>
+                        <div id="output"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
+        <!-- lexer.js: See https://github.com/aaditmshah/lexer -->
+        <script src="https://cdn.rawgit.com/aaditmshah/lexer/master/lexer.js"></script>
+        <script src="curlyScanner.js"></script>
+        <script src="demo.js"></script>
+    </body>
+</html>
