@@ -1,6 +1,6 @@
 
-function CurlyScanner(input) {
-    var state = 'HTML_CONTEXT';
+function CurlyScanner() {
+    var that = this;
 
     // List of states. Rules are enabled and disabled based on the state.
     //
@@ -10,92 +10,95 @@ function CurlyScanner(input) {
     // CURLY_ATTR_VALUE_CONTEXT   (expecting component attribute value)
 
     this.lexer = new Lexer(function(char) {
-        state = 'HTML_CONTEXT';
+        that.state = 'HTML_CONTEXT';
         throw('*** SYNTAX ERROR near: \'' + char + '\'');
     })
     .addRule(/[\S\s]*?(?=\{\{|$)/, function(lexeme) { // Anything up to '{{' or EOF, don't consume the '{{' part
-        if (state !== 'HTML_CONTEXT') {
+        if (that.state !== 'HTML_CONTEXT') {
             this.reject = true;
         } else {
-            state = 'CURLY_CONTEXT';
+            that.state = 'CURLY_CONTEXT';
             return { name: 'HTML_STRING', value: lexeme };
         }
     })
     .addRule(/\w+=/, function(lexeme) { // One or more alphanumerics followed by '='
-        if (state !== 'CURLY_CONTEXT') {
+        if (that.state !== 'CURLY_CONTEXT') {
             this.reject = true;
         } else {
-            state = 'CURLY_ATTR_VALUE_CONTEXT';
+            that.state = 'CURLY_ATTR_VALUE_CONTEXT';
             return { name: 'CURLY_ATTR_NAME', value: lexeme.slice(0, -1) };
         }
     })
     .addRule(/\".*?\"/, function(lexeme) { // '"' followed by anything up to next '"' TBD: doesn't support \"
-        if (state !== 'CURLY_ATTR_VALUE_CONTEXT') {
+        if (that.state !== 'CURLY_ATTR_VALUE_CONTEXT') {
             this.reject = true;
         } else {
-            state = 'CURLY_CONTEXT';
+            that.state = 'CURLY_CONTEXT';
             return { name: 'CURLY_ATTR_VALUE', value: lexeme.slice(1, -1) };
         }
     })
     .addRule(/[^"\s]\S*?(?=}}|\s)/, function(lexeme) { // Not '"' followed by anything up to '}}' or whitespace character, don't consume '}}' part
-        if (state !== 'CURLY_ATTR_VALUE_CONTEXT') {
+        if (that.state !== 'CURLY_ATTR_VALUE_CONTEXT') {
             this.reject = true;
         } else {
-            state = 'CURLY_CONTEXT';
+            that.state = 'CURLY_CONTEXT';
             return { name: 'CURLY_ATTR_VALUE', value: lexeme };
         }
     })
     .addRule(/\s+/, function() { // One or more whitespace characters
-        if (state !== 'CURLY_CONTEXT') {
+        if (that.state !== 'CURLY_CONTEXT') {
             this.reject = true;
         }
     })
     .addRule(/\{\{/, function () { // '{{'
-        state = 'CURLY_NAME_CONTEXT';
+        that.state = 'CURLY_NAME_CONTEXT';
         return [ { name: 'CURLY_TAG_START' } ];
     })
     .addRule(/\{\{#/, function() { // '{{#'
-        state = 'CURLY_NAME_CONTEXT';
+        that.state = 'CURLY_NAME_CONTEXT';
         return [ { name: 'CURLY_TAG_START' }, { name: 'CURLY_CONDITIONAL' } ];
     })
     .addRule(/\{\{!.*?(?=\}\})/, function(lexeme) { // '{{!'' followed by any characters up to next '}}'
-        state = 'CURLY_CONTEXT';
+        that.state = 'CURLY_CONTEXT';
         return [ { name: 'CURLY_TAG_START' }, { name: 'CURLY_COMMENT', value: lexeme.substring(3) } ];
     })
     .addRule(/\{\{@/, function() { // '{{@'
-        state = 'CURLY_NAME_CONTEXT';
+        that.state = 'CURLY_NAME_CONTEXT';
         return [ { name: 'CURLY_TAG_START' }, { name: 'CURLY_CONTEXT_BLOCK_START' } ];
     })
     .addRule(/\{\{\*/, function() { // '{{*'
-        state = 'CURLY_NAME_CONTEXT';
+        that.state = 'CURLY_NAME_CONTEXT';
         return [ { name: 'CURLY_TAG_START' }, { name: 'CURLY_COLLECTION_BLOCK_START' } ];
     })
     .addRule(/\{\{\//, function() { // '{{/'
-        state = 'CURLY_NAME_CONTEXT';
+        that.state = 'CURLY_NAME_CONTEXT';
         return [ { name: 'CURLY_TAG_START' }, { name: 'CURLY_BLOCK_END' } ];
     })
     .addRule(/\{\{\{/, function() { // '{{{'
-        state = 'HTML_CONTEXT';
+        that.state = 'HTML_CONTEXT';
         return [ { name: 'CURLY_ESCAPE_CURLY' } ];
     })
     .addRule(/[\w.?]+/, function(lexeme) { // One or more alphanumerics or dots
-        if (state !== 'CURLY_NAME_CONTEXT') {
+        if (that.state !== 'CURLY_NAME_CONTEXT') {
             this.reject = true;
         } else {
-            state = 'CURLY_CONTEXT';
+            that.state = 'CURLY_CONTEXT';
             return { name: 'CURLY_NAME', value: lexeme };
         }
     })
     .addRule(/\}\}/, function() { // '}}'
-        if (state === 'HTML_CONTEXT') {
+        if (that.state === 'HTML_CONTEXT') {
             this.reject = true;
         } else {
-            state = 'HTML_CONTEXT';
+            that.state = 'HTML_CONTEXT';
             return { name: 'CURLY_TAG_END' };
         }
     });
+}
 
-    this.lexer.input = input;
+CurlyScanner.prototype.setInput = function(input) {
+    this.state = 'HTML_CONTEXT';
+    return this.lexer.setInput(input);
 }
 
 CurlyScanner.prototype.scan = function() {

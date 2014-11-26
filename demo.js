@@ -9,11 +9,14 @@ function main() {
     scan(getInput());
 }
 
+var scanner = new CurlyScanner();
+
 function scan(input) {
     var start = new Date().getTime();
-    var scanner = new CurlyScanner(input);
     var output = [];
     var token;
+
+    scanner.setInput(input);
 
     while(1) {
         try {
