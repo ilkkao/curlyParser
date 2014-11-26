@@ -5,4 +5,4 @@ A quick experiment. Lexical scanner for
 [Lexer](https://github.com/aaditmshah/lexer), a flex clone written in
 JavaScript.
 
-### [Live demo](https://cdn.rawgit.com/ilkkao/curlyScanner/master/demo.html)
+### [Live demo](https://rawgit.com/ilkkao/curlyScanner/master/demo.html)
