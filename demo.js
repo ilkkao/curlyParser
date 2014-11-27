@@ -33,16 +33,14 @@ function scan(input) {
     $('#output').empty().text(JSON.stringify(treeAndErrors.tree, undefined, 4));
 
     // Print possible syntax errors
-    var errors = tokensAndErrors.errors.concat(treeAndErrors.errors);
+    var errors = treeAndErrors.errors.concat(tokensAndErrors.errors);
     var errorText = '';
 
     errors.forEach(function(error, index) {
         errorText += 'ERROR #' + index + ': ' + error + '\n';
     });
 
-    if (errors.length > 0) {
-        $('#output').prepend(errorText + '\n');
-    }
+    $('#errors').empty().prepend(errorText + '\n');
 }
 
 function removeLoops(node) {

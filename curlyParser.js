@@ -20,9 +20,10 @@ CurlyParser.prototype.parse = function(tokens) {
     this.tokens = tokens;
     this.cursor = null;
     this.currentToken = '';
+    this.errors = [];
 
     var treeRoot = this.addChildNodeAndTraverseDown('ROOT', null);
-    var errors = [];
+
 
     while (this.currentToken = this.getNextToken()) {
         switch(this.currentToken.name) {
@@ -40,7 +41,9 @@ CurlyParser.prototype.parse = function(tokens) {
         }
     }
 
-    return { tree: treeRoot, errors: errors };
+    this.checkForOpenTags();
+
+    return { tree: treeRoot, errors: this.errors };
 };
 
 CurlyParser.prototype.parseTag = function() {
@@ -128,7 +131,13 @@ CurlyParser.prototype.parseBlockEndTag = function() {
     var name = this.getNextToken().value;
     var tagEnd = this.getNextToken();
 
-    this.traverseUp();
+    if (this.cursor.type === 'ROOT') {
+        this.errors.push('Unmatched Curly close tag {{/' + name + '}}');
+    } else if (this.cursor.data.name !== name) {
+        this.errors.push('Close tag {{/' + this.cursor.data.name + '}} expected, saw {{/' + name + '}}');
+    } else {
+        this.traverseUp();
+    }
 };
 
 CurlyParser.prototype.getNextToken = function() {
@@ -153,6 +162,14 @@ CurlyParser.prototype.addChildNodeAndTraverseDown = function(type, data) {
     return node;
 };
 
-CurlyParser.prototype.traverseUp = function() {
-    this.cursor = this.cursor.parent; // TBD: Assert if no parent
+CurlyParser.prototype.checkForOpenTags = function() {
+    while (this.cursor.type !== 'ROOT') {
+        this.errors.push('Curly close tag {{/' + this.cursor.data.name + '}} missing');
+        this.traverseUp();
+    }
 };
+
+CurlyParser.prototype.traverseUp = function() {
+    this.cursor = this.cursor.parent;
+};
+

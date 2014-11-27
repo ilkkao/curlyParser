@@ -21,6 +21,10 @@
             #input {
                 font-family: monospace;
             }
+
+            #errors {
+                color: red;
+            }
         </style>
     </head>
     <body>
@@ -32,7 +36,7 @@
             <div class="row main">
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label for="comment">Write or paste curly template:</label>
+                        <label for="comment">Write or paste curly: (output updates real time)</label>
 
                         <textarea class="form-control" rows="35" id="input">
 <div id="foo">
@@ -41,7 +45,7 @@
 
 {{#vip_customer}}
   <div>{{sidebar row=3 width=20px title="I'm the one!"}}</div>
-{{/vip_customer}}
+{{/vip_cXustomer}}
 
 {{{ is a beautiful symbol
 
@@ -60,20 +64,28 @@ Difference?
 
 {{ {{second_syntax_error}}
 
-{{third_syntax_error} }
-
 {{*items}}
   {{item}}
 {{/items}}
+
+{{third_syntax_error} }
 
 <div>{{{{{end}}}}}</div>
 </textarea>
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="comment">AST and possible errors (updates real time):</label>
-                        <pre id="output"></pre>
+                    <div class="row">
+                        <div class="form-group">
+                            <label for="comment">Errors:</label>
+                            <pre id="errors"></pre>
+                        </div>
+                    </div>
+                    <div class="row main">
+                        <div class="form-group">
+                            <label for="comment">AST:</label>
+                            <pre id="output"></pre>
+                        </div>
                     </div>
                 </div>
             </div>
