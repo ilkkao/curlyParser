@@ -28,9 +28,13 @@ function scan(input) {
     $('#time').text('Execution time was ' + time + ' ms.');
 
     // All done. As an example, convert AST to plain JSON tree
+    var ASTTree = treeAndErrors.tree;
 
-    removeLoops(treeAndErrors.tree);
-    $('#output').empty().text(JSON.stringify(treeAndErrors.tree, undefined, 4));
+    ASTTree.traverse(function(node) {
+        delete node.parent; // JSON.stingify below can't handle circles
+    });
+
+    $('#output').empty().text(JSON.stringify(ASTTree, undefined, 4));
 
     // Print possible syntax errors
     var errors = treeAndErrors.errors.concat(tokensAndErrors.errors);
@@ -41,22 +45,6 @@ function scan(input) {
     });
 
     $('#errors').empty().prepend(errorText + '\n');
-}
-
-function removeLoops(node) {
-    if (!node) {
-        return;
-    }
-
-    delete node.parent; // JSON.stringify can't handle circles
-
-    if (node.children.length > 0) {
-        for (var i = 0; i < node.children.length; i++) {
-            removeLoops(node.children[i]);
-        }
-    } else {
-        delete node.children;
-    }
 }
 
 function getInput() {
