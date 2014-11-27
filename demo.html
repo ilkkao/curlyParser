@@ -5,38 +5,20 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
 
         <style>
+            html, body, .container, .main, .col-md-6, .form-group {
+                height: 100%;
+            }
+
             .form-group, body {
-                padding: 20px 0px;
+                margin: 20px 0px;
+                overflow: auto;
             }
 
-            .error, .info {
-                background-color: #eeeeee;
-                font-size: 11px;
-                white-space: pre;
-                margin-bottom: 4px;
+            #output {
+              height: 90%;
             }
 
-            .myclearfix:after {
-                content: " ";
-                display: block;
-                height: 0;
-                clear: both;
-            }
-
-            #output div div {
-                float: left;
-                width: 200px;
-            }
-
-            .error {
-                color: red;
-            }
-
-            .info.html {
-                color: #4918DA;
-            }
-
-            #input, .error, .info {
+            #input {
                 font-family: monospace;
             }
         </style>
@@ -47,7 +29,7 @@
             <div class="row">
                 <div id="time"></div>
             </div>
-            <div class="row">
+            <div class="row main">
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="comment">Write or paste curly template:</label>
@@ -90,8 +72,8 @@ Difference?
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label for="comment">Tokenized input (updates real time):</label>
-                        <div id="output"></div>
+                        <label for="comment">AST and possible errors (updates real time):</label>
+                        <pre id="output"></pre>
                     </div>
                 </div>
             </div>
@@ -99,7 +81,11 @@ Difference?
         <script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
         <!-- lexer.js: See https://github.com/aaditmshah/lexer -->
         <script src="https://cdn.rawgit.com/aaditmshah/lexer/master/lexer.js"></script>
+
+        <script src="curlyASTNode.js"></script>
         <script src="curlyScanner.js"></script>
+        <script src="curlyParser.js"></script>
+
         <script src="demo.js"></script>
     </body>
 </html>
