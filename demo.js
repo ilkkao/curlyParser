@@ -9,18 +9,15 @@ function main() {
     scan(getInput());
 }
 
-var scanner = new CurlyScanner();
 var parser = new CurlyParser();
 
 function scan(input) {
-    var start = new Date().getTime();
     var output = [];
 
-    // Phase 1: Scanning
-    var tokensAndErrors = scanner.scan(input);
+    var start = new Date().getTime();
 
-    // Phase 2: Parsing
-    var treeAndErrors = parser.parse(tokensAndErrors.tokens);
+    // Heavy lifting
+    var treeAndErrors = parser.parse(input);
 
     var end = new Date().getTime();
 
@@ -29,6 +26,7 @@ function scan(input) {
 
     // All done. As an example, convert AST to plain JSON tree
     var ASTTree = treeAndErrors.tree;
+    var errors = treeAndErrors.errors;
 
     ASTTree.traverse(function(node) {
         delete node.parent; // JSON.stingify below can't handle circles
@@ -37,7 +35,6 @@ function scan(input) {
     $('#output').empty().text(JSON.stringify(ASTTree, undefined, 4));
 
     // Print possible syntax errors
-    var errors = treeAndErrors.errors.concat(tokensAndErrors.errors);
     var errorText = '';
 
     errors.forEach(function(error, index) {

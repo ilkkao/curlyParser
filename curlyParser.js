@@ -14,13 +14,16 @@
 //   'CONTEXT'
 
 function CurlyParser() {
+    this.scanner = new CurlyScanner();
 }
 
-CurlyParser.prototype.parse = function(tokens) {
-    this.tokens = tokens;
+CurlyParser.prototype.parse = function(input) {
     this.cursor = null;
     this.currentToken = '';
-    this.errors = [];
+
+    var tokensAndErrors = this.scanner.scan(input);
+    this.tokens = tokensAndErrors.tokens;
+    this.errors = tokensAndErrors.errors;
 
     var treeRoot = this.addChildNodeAndTraverseDown('ROOT', null);
 
