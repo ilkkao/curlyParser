@@ -24,7 +24,6 @@ CurlyParser.prototype.parse = function(tokens) {
 
     var treeRoot = this.addChildNodeAndTraverseDown('ROOT', null);
 
-
     while (this.currentToken = this.getNextToken()) {
         switch(this.currentToken.name) {
             case 'HTML_STRING':
