@@ -142,9 +142,9 @@ CurlyParser.prototype.getNextToken = function() {
 
 CurlyParser.prototype.addChildNode = function(type, data) {
     var node = new curlyASTNode(type, data);
+    var parent = this.cursor;
 
-    if (this.cursor) {
-        var parent = this.cursor;
+    if (parent) {
         node.setParent(parent);
         parent.addChild(node);
     }
