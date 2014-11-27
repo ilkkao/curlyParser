@@ -96,11 +96,26 @@ function CurlyScanner() {
     });
 }
 
-CurlyScanner.prototype.setInput = function(input) {
+CurlyScanner.prototype.scan = function(input) {
     this.state = 'HTML_CONTEXT';
-    return this.lexer.setInput(input);
-}
+    this.lexer.setInput(input);
 
-CurlyScanner.prototype.scan = function() {
-    return this.lexer.lex();
-}
+    var tokens = [];
+    var errors = [];
+
+    while(1) {
+        try {
+           token = this.lexer.lex();
+        } catch (e) {
+            errors.push(e);
+        }
+
+        if (token) {
+            tokens.push(token);
+        } else {
+            break;
+        }
+    }
+
+    return { tokens: tokens, errors: errors };
+};

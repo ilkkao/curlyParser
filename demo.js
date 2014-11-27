@@ -15,30 +15,12 @@ var parser = new CurlyParser();
 function scan(input) {
     var start = new Date().getTime();
     var output = [];
-    var token;
-    var tokens = [];
 
     // Phase 1: Scanning
-
-    scanner.setInput(input);
-
-    while(1) {
-        try {
-           token = scanner.scan();
-        } catch (e) {
-            logError(e, output)
-        }
-
-        if (token) {
-            tokens.push(token);
-        } else {
-            break;
-        }
-    }
+    var tokensAndErrors = scanner.scan(input);
 
     // Phase 2: Parsing
-
-    var tree = parser.parse(tokens);
+    var treeAndErrors = parser.parse(tokensAndErrors.tokens);
 
     var end = new Date().getTime();
 
@@ -47,19 +29,19 @@ function scan(input) {
 
     // All done. As an example, convert AST to plain JSON tree
 
-    removeLoops(tree);
-    $('#output').text(JSON.stringify(tree, undefined, 4));
+    removeLoops(treeAndErrors.tree);
+    $('#output').empty().text(JSON.stringify(treeAndErrors.tree, undefined, 4));
 
     // Print possible syntax errors
-    var errors = '';
+    // var errors = '';
 
-    output.forEach(function(error, index) {
-        errors += 'ERROR #' + index + ': ' + error.value + '\n';
-    });
+    // output.forEach(function(error, index) {
+    //     errors += 'ERROR #' + index + ': ' + error.value + '\n';
+    // });
 
-    if (output.length > 0) {
-        $('#output').prepend(errors + '\n');
-    }
+    // if (output.length > 0) {
+    //     $('#output').prepend(errors + '\n');
+    // }
 }
 
 function removeLoops(node) {

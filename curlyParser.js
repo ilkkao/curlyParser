@@ -14,14 +14,15 @@
 //   'CONTEXT'
 
 function CurlyParser() {
-    this.currentToken = '';
 }
 
 CurlyParser.prototype.parse = function(tokens) {
     this.tokens = tokens;
     this.cursor = null;
+    this.currentToken = '';
 
     var treeRoot = this.addChildNodeAndTraverseDown('ROOT', null);
+    var errors = [];
 
     while (this.currentToken = this.getNextToken()) {
         switch(this.currentToken.name) {
@@ -39,7 +40,7 @@ CurlyParser.prototype.parse = function(tokens) {
         }
     }
 
-    return treeRoot;
+    return { tree: treeRoot, errors: errors };
 };
 
 CurlyParser.prototype.parseTag = function() {
