@@ -33,15 +33,16 @@ function scan(input) {
     $('#output').empty().text(JSON.stringify(treeAndErrors.tree, undefined, 4));
 
     // Print possible syntax errors
-    // var errors = '';
+    var errors = tokensAndErrors.errors.concat(treeAndErrors.errors);
+    var errorText = '';
 
-    // output.forEach(function(error, index) {
-    //     errors += 'ERROR #' + index + ': ' + error.value + '\n';
-    // });
+    errors.forEach(function(error, index) {
+        errorText += 'ERROR #' + index + ': ' + error + '\n';
+    });
 
-    // if (output.length > 0) {
-    //     $('#output').prepend(errors + '\n');
-    // }
+    if (errors.length > 0) {
+        $('#output').prepend(errorText + '\n');
+    }
 }
 
 function removeLoops(node) {
