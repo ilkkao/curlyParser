@@ -82,12 +82,9 @@ CurlyParser.prototype.parseIdentifierTag = function() {
     while (this.currentToken = this.getNextToken()) {
         switch(this.currentToken.name) {
             case 'CURLY_ATTR_NAME':
-                var paramName = this.currentToken.value;
-                var paramValue = this.getNextToken();
-
                 parameters.push({
-                    name: paramName,
-                    value: paramValue
+                    name: this.currentToken.value,
+                    value: this.getNextToken()
                 });
                 break;
 
