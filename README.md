@@ -1,6 +1,6 @@
-# JavaScript Curly template scanner
+# JavaScript Curly template parser
 
-A quick experiment. Lexical scanner for
+A quick experiment. Parser for
 [Curly](https://github.com/zendesk/curly). Uses
 [Lexer](https://github.com/aaditmshah/lexer), a flex clone written in
 JavaScript.
